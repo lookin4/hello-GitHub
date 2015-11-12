@@ -39,7 +39,7 @@ int main(int argv, char*argc[]){
 	}
 
 	for (int i = 0; i < width*height; i++){
-		if (i%width == 0){
+		if ((i+1)%width == 0){
 			printf("%d\n",_p[i]);
 		}
 		else{
