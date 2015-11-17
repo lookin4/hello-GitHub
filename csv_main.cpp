@@ -11,6 +11,7 @@ int main(int argv, char*argc[]){
 	int height = 14;
 
 	char buff[256];
+	int num;
 	FILE *pFile = 
 		fopen(
 		"map.csv",
@@ -22,16 +23,9 @@ int main(int argv, char*argc[]){
 	int *_p = (int*)malloc(sizeof(int)*width*height);
 
 	for (int i = 0; i < width*height; i++){
-		if (fscanf(pFile, "%1s", buff) != NULL){
-			if (strcmp(buff, ",") == 0){
-				_p[i] = 0;
-				continue;
-			}
-			else{
-				//_p[i] = (int)buff;
-				_p[i] = 1;
-				fscanf(pFile, "%1s", buff);
-			}
+		if (fscanf(pFile, "%d", &num) != NULL){
+			_p[i] = num;
+			fscanf(pFile, "%1s", buff);
 		}
 		else{
 			return -1;
