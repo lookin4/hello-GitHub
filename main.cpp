@@ -1,7 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #define _USE_MATH_DEFINES
 
 #include<stdio.h>
 #include<math.h>
+#include<assert.h>
 #include"sleep.h"
 #include"glut.h"
 
@@ -56,6 +58,46 @@ void keyboardUp(unsigned char key, int x, int y){
 }
 
 
+int* readCsv(char* _fileName,const int _width,const int _height){
+	//読み込みマップの縦横
+	//_width = 78;
+	//_height = 14;
+
+	char buff[256];
+	int num;
+	FILE *pFile =
+		fopen(
+		_fileName,
+		"r"
+		);
+
+	assert(pFile != NULL);
+
+	int *_p = (int*)malloc(sizeof(int)*_width*_height);
+
+	for (int i = 0; i < _width*_height; i++){
+		if (fscanf(pFile, "%d", &num) != NULL){
+			_p[i] = num;
+			fscanf(pFile, "%1s", buff);
+		}
+		else{
+			printf("ファイルデータが正しくありません。\n");
+		}
+	}
+
+	/*for (int i = 0; i < _width*_height; i++){
+		if ((i + 1) % _width == 0){
+			printf("%d\n", _p[i]);
+		}
+		else{
+			printf("%d", _p[i]);
+		}
+	}*/
+	//getchar();
+	return _p;
+}
+
+
 void display(void){
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -75,18 +117,7 @@ void display(void){
 		pPlayer->position.x+5, 8, 0,//GLdouble centerx,centery,centerz,
 		0, 1, 0);//GLdouble upx,upy, upz
 	glColor3f(1, 1, 0.5);
-	/*for (int i = -20; i < 20; i++){
-		glBegin(GL_LINES);
-		{
-			glVertex3f(i, -20, 0);
-			glVertex3f(i, 20, 0);
-		}
-		{
-			glVertex3f(-20, i, 0);
-			glVertex3f(20, i, 0);
-		}
-		glEnd();
-	}*/
+	
 	glBegin(GL_QUADS);
 	{
 		glVertex3f(20,-1,0);
@@ -173,7 +204,15 @@ void timer(int value){
 
 int main(int argc, char *argv[]){
 	pPlayer = new Character(0, 0, 0);
-
+	static int* map = readCsv("map.csv", 78, 14);
+	for (int i = 0; i < 78*14; i++){
+		if ((i + 1) % 78 == 0){
+			printf("%d\n", map[i]);
+		}
+		else{
+			printf("%d", map[i]);
+		}
+	}
 	glutInit(&argc, argv);
 	glutCreateWindow(argv[0]);
 	glutDisplayFunc(display);//void (GLUTCALLBACK *func)(void)
