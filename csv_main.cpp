@@ -41,5 +41,6 @@ int main(int argv, char*argc[]){
 		}
 	}
 	getchar();
+	free(_p);
 	return 0;
 }
