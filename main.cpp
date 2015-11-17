@@ -82,6 +82,8 @@ int* readCsv(char* _fileName,const int _width,const int _height){
 		}
 		else{
 			printf("ファイルデータが正しくありません。\n");
+			getchar();
+			exit(0);
 		}
 	}
 
