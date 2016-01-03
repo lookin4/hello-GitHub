@@ -11,7 +11,17 @@
 #include"gazou.h"
 
 Music music;
+Music touch;
 
+enum {
+	MONO = 1,
+	STEREO
+};
+
+Music::Music(char*filename)
+{
+	LoadMusic(filename);
+}
 
 Music::Music(char*filename, char*musicname, char*_bpmfile, char*jakettoname, char*titlejakename, float _bpm){
 	memset( name, 0, sizeof(char)*32 );
@@ -41,7 +51,7 @@ void Music::LoadMusic(char*filename){
 		&buffer);  // ALuint* buffers
 	assert(alGetError() == AL_NO_ERROR);
 
-	WAVEFORMATÅá wavfmt;
+	MYWAVEFORMAT wavfmt;
 
 
 	assert(alGetError() == AL_NO_ERROR);
@@ -55,7 +65,7 @@ void Music::LoadMusic(char*filename){
 
 	fread(
 		&wavfmt,
-		sizeof(WAVEFORMATÅá),
+		sizeof(MYWAVEFORMAT),
 		1,
 		pFile);
 
@@ -69,18 +79,47 @@ void Music::LoadMusic(char*filename){
 		1,
 		pFile);
 
+	int format;
+	if (wavfmt.channel == MONO)
+	{
+		if (wavfmt.bit == 8) 
+		{
+			format = AL_FORMAT_MONO8;
+		}
+		else if (wavfmt.bit == 16)
+		{
+			format = AL_FORMAT_MONO16;
+		}
+	}
+	else if (wavfmt.channel == STEREO) 
+	{
+		if (wavfmt.bit == 8)
+		{
+			format = AL_FORMAT_STEREO8;
+		}
+		else if (wavfmt.bit == 16)
+		{
+			format = AL_FORMAT_STEREO16;
+		}
+	}
+
+
+	
 
 	alBufferData(
 		buffer,            // ALuint bid
-		AL_FORMAT_STEREO16,// ALenum format
+		format,// ALenum format
 		w_data,        // const ALvoid* data
 		w_size,           // ALsizei size
 		wavfmt.rate);      // ALsizei freq
 
+	assert(alGetError() == AL_NO_ERROR);
 
 	alGenSources(
 		1,      // ALsizei n
 		&source);  // ALuint* sources
+
+	assert(alGetError() == AL_NO_ERROR);
 
 	alSourcei(
 		source,        // ALuint sid
